@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include "Lox.hpp"
+#include "error_handler.hpp"
 
 std::vector<std::string> scanTokens(std::string& source)
 {
@@ -62,7 +63,7 @@ void runFile(std::string path)
     }
     else
     {
-        std::cout << "Unable to open file" << std::endl;
+        error(__LINE__, "File unable to open");
     }
 }
 

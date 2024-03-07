@@ -3,7 +3,10 @@
 
 class Lox
 {
+    private:
 
+    public:
+        bool hadError;
 };
 
 #endif
