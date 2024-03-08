@@ -4,6 +4,30 @@
 
 #include <iostream>
 
+Scanner::Scanner(std::string source) : source(source)
+{
+    start = 0;
+    current = 0;
+    line = 1;
+
+    keywords.insert({"and", TokenType::AND});
+    keywords.insert({"class", TokenType::CLASS});
+    keywords.insert({"else", TokenType::ELSE});
+    keywords.insert({"false", TokenType::FALSE});
+    keywords.insert({"for", TokenType::FOR});
+    keywords.insert({"fun", TokenType::FUN});
+    keywords.insert({"if" , TokenType::IF});
+    keywords.insert({"nil", TokenType::NIL});
+    keywords.insert({"or", TokenType::OR});
+    keywords.insert({"print", TokenType::PRINT});
+    keywords.insert({"return", TokenType::RETURN});
+    keywords.insert({"super", TokenType::SUPER});
+    keywords.insert({"this", TokenType::THIS});
+    keywords.insert({"true", TokenType::TRUE});
+    keywords.insert({"var", TokenType::VAR});
+    keywords.insert({"while", TokenType::WHILE});
+}
+
 bool Scanner::isAtEnd()
 {
     return current >= source.length();
@@ -74,6 +98,10 @@ void Scanner::scanToken()
         if (isDigit(c))
         {
             number();
+        }
+        else if (isAlpha(c))
+        {
+            identifier();
         }
         else
         {
@@ -150,6 +178,18 @@ bool Scanner::isDigit(char c)
     return c >= '0' && c <= '9';
 }
 
+bool Scanner::isAlpha(char c)
+{
+    return (c >= 'a' && c <= 'z') ||
+           (c >= 'A' && c <= 'Z') ||
+           c == '_';
+}
+
+bool Scanner::isAlphaNumeric(char c)
+{
+    return isDigit(c) || isAlpha(c);
+}
+
 void Scanner::number()
 {
     while (isDigit(peek())) advance();
@@ -162,4 +202,24 @@ void Scanner::number()
     while (isDigit(peek())) advance();
 
     addToken(TokenType::NUMBER, source.substr(start, current));
+}
+
+void Scanner::identifier()
+{
+    while (isAlphaNumeric(peek())) advance();
+
+    std::string text = source.substr(start, current);
+    auto it = keywords.find(text);
+
+    TokenType type;
+    if (it != keywords.end())
+    {
+        type = it->second;
+    }
+    else
+    {
+        type = TokenType::IDENTIFIER;
+    }
+
+    addToken(type);
 }

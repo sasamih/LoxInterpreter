@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 #include "Lox.hpp"
 
@@ -14,6 +15,7 @@ class Scanner {
         int start;
         int current;
         int line;
+        std::map<std::string, TokenType> keywords;
 
         bool isAtEnd();
         void scanToken();
@@ -25,15 +27,13 @@ class Scanner {
         char peekNext();
         void string();
         bool isDigit(char c);
+        bool isAlpha(char c);
+        bool isAlphaNumeric(char c);
         void number();
+        void identifier();
 
     public:
-        Scanner(std::string source) : source(source)
-        {
-            start = 0;
-            current = 0;
-            line = 1;
-        }
+        Scanner(std::string source);
 
         std::vector<Token> scanTokens();
 };

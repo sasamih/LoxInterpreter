@@ -1,6 +1,8 @@
 #ifndef LOX_HPP
 #define LOX_HPP
 
+#include <map>
+
 enum class TokenType {
   // Single-character tokens.
   LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,
@@ -28,8 +30,7 @@ class Token
         std::string literal;
         int line;
     public:
-        Token(TokenType type, std::string lexeme, std::string literal, int line) :
-                type(type), lexeme(lexeme), literal(literal), line(line) { }
+        Token(TokenType type, std::string lexeme, std::string literal, int line);
         
         std::string str();
 };
