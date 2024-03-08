@@ -2,6 +2,8 @@
 #include "Lox.hpp"
 #include "error_handler.hpp"
 
+#include <iostream>
+
 bool Scanner::isAtEnd()
 {
     return current >= source.length();
@@ -33,6 +35,19 @@ void Scanner::scanToken()
       case '+': addToken(TokenType::PLUS); break;
       case ';': addToken(TokenType::SEMICOLON); break;
       case '*': addToken(TokenType::STAR); break;
+      case '/':
+        if (!match('/'))
+        {
+            addToken(TokenType::SLASH); break;
+        }
+        else
+        {
+            while (peek() != '\n' && !isAtEnd()) 
+            {
+                advance();
+            }
+        }
+        break;
       case '!':
         addToken(match('=') ? TokenType::BANG_EQUAL : TokenType::BANG);
         break;
@@ -44,6 +59,13 @@ void Scanner::scanToken()
         break;
       case '>':
         addToken(match('>') ? TokenType::GREATER_EQUAL : TokenType::GREATER);
+        break;
+      case ' ':
+      case '\r':
+      case '\t':
+        break;
+      case '\n':
+        line++;
         break;
       default:
         error(line, "Unexpected character");
@@ -77,4 +99,10 @@ bool Scanner::match(char expected)
 
     current++;
     return true;
+}
+
+char Scanner::peek()
+{
+    if (isAtEnd()) return '\0';
+    return source.at(current);
 }
