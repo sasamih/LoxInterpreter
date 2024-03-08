@@ -67,8 +67,18 @@ void Scanner::scanToken()
       case '\n':
         line++;
         break;
+      case '"':
+        string();
+        break;
       default:
-        error(line, "Unexpected character");
+        if (isDigit(c))
+        {
+            number();
+        }
+        else
+        {
+            error(line, "Unexpected character");
+        }
         break;
     }
 }
@@ -105,4 +115,51 @@ char Scanner::peek()
 {
     if (isAtEnd()) return '\0';
     return source.at(current);
+}
+
+char Scanner::peekNext()
+{
+    if (current+1 >= source.length()) return '\0';
+    return source.at(current+1);
+}
+
+void Scanner::string()
+{
+    while (peek() != '"' && !isAtEnd())
+    {
+        if (peek() == '\n')
+        {
+            line++;
+        }
+        advance();
+    }
+
+    if (isAtEnd())
+    {
+        error(line, "Unterminated string");
+    }
+
+    advance();
+
+    std::string value = source.substr(start + 1, current - 2);
+    addToken(TokenType::STRING, value);
+}
+
+bool Scanner::isDigit(char c)
+{
+    return c >= '0' && c <= '9';
+}
+
+void Scanner::number()
+{
+    while (isDigit(peek())) advance();
+
+    if (peek() == '.' && isDigit(peekNext()))
+    {
+        advance();
+    }
+
+    while (isDigit(peek())) advance();
+
+    addToken(TokenType::NUMBER, source.substr(start, current));
 }

@@ -22,6 +22,10 @@ class Scanner {
         char advance();
         bool match(char expected);
         char peek();
+        char peekNext();
+        void string();
+        bool isDigit(char c);
+        void number();
 
     public:
         Scanner(std::string source) : source(source)
