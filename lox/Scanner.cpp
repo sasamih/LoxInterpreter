@@ -1,5 +1,6 @@
 #include "Scanner.hpp"
 #include "Lox.hpp"
+#include "error_handler.hpp"
 
 bool Scanner::isAtEnd()
 {
@@ -8,6 +9,13 @@ bool Scanner::isAtEnd()
 
 std::vector<Token> Scanner::scanTokens()
 {
+    while(!isAtEnd())
+    {
+        start = current;
+        scanToken();
+    }
+
+    tokens.push_back(Token(TokenType::LEOF, "", "", line));
     return tokens;
 }
 
@@ -24,22 +32,49 @@ void Scanner::scanToken()
       case '-': addToken(TokenType::MINUS); break;
       case '+': addToken(TokenType::PLUS); break;
       case ';': addToken(TokenType::SEMICOLON); break;
-      case '*': addToken(TokenType::STAR); break; 
+      case '*': addToken(TokenType::STAR); break;
+      case '!':
+        addToken(match('=') ? TokenType::BANG_EQUAL : TokenType::BANG);
+        break;
+      case '=':
+        addToken(match('=') ? TokenType::EQUAL_EQUAL : TokenType::EQUAL);
+        break;
+      case '<':
+        addToken(match('<') ? TokenType::LESS_EQUAL : TokenType::LESS);
+        break;
+      case '>':
+        addToken(match('>') ? TokenType::GREATER_EQUAL : TokenType::GREATER);
+        break;
+      default:
+        error(line, "Unexpected character");
+        break;
     }
 }
 
 void Scanner::addToken(TokenType tType)
 {
-    addToken(tType, nullptr);
+    addToken(tType, "");
 }
 
 void Scanner::addToken(TokenType tType, std::string literal)
 {
     std::string text = source.substr(start, current);
     Token temp(tType, text, literal, line);
+    tokens.push_back(temp);
 }
 
 char Scanner::advance()
 {
     return source.at(current++);
+}
+
+bool Scanner::match(char expected)
+{
+    if (isAtEnd())
+        return false;
+    if (source.at(current) != expected) 
+        return false;
+
+    current++;
+    return true;
 }

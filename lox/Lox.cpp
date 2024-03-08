@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include "Lox.hpp"
+#include "Scanner.hpp"
 #include "error_handler.hpp"
 
 std::string Token::str()
@@ -36,11 +37,12 @@ std::vector<std::string> scanTokens(std::string& source)
 
 void run(std::string source)
 {
-    std::vector<std::string> tokens = scanTokens(source);
+    Scanner scanner(source);
+    std::vector<Token> tokens = scanner.scanTokens();
 
     // For now, just print the tokens.
     for (auto& token : tokens) {
-        std::cout << token << std::endl;
+        std::cout << token.str() << std::endl;
     }
 }
 

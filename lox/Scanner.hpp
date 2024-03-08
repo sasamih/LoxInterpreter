@@ -20,6 +20,7 @@ class Scanner {
         void addToken(TokenType tType);
         void addToken(TokenType tType, std::string literal);
         char advance();
+        bool match(char expected);
 
     public:
         Scanner(std::string source) : source(source)
