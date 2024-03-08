@@ -7,6 +7,12 @@
 #include "Lox.hpp"
 #include "error_handler.hpp"
 
+std::string Token::str()
+{
+    return "" + std::to_string((int)type) + " " + lexeme + " " + literal;
+}
+
+
 std::vector<std::string> scanTokens(std::string& source)
 {
     std::vector<std::string> tokens;
